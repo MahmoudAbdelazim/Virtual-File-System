@@ -1,11 +1,11 @@
-package com;
+package com.Accounts;
 
-import java.io.Serializable;
-import java.util.ArrayList;
+import com.FileSystem.Access;
+import com.FileSystem.Directory;
 
-public abstract class Account implements Serializable {
-    protected String username;
-    protected String password;
+public abstract class Account {
+    private String username;
+    private String password;
 
     Account(String username, String password) {
         this.username = username;
@@ -14,7 +14,7 @@ public abstract class Account implements Serializable {
 
     private boolean canCreate(Directory directory) {
         if (username.equalsIgnoreCase("admin")) return true;
-        for (Access acc: directory.accesses) {
+        for (Access acc : directory.getAccesses()) {
             if (acc.username.equalsIgnoreCase(username) && acc.create) {
                 return true;
             }
@@ -24,7 +24,7 @@ public abstract class Account implements Serializable {
 
     private boolean canDelete(Directory directory) {
         if (username.equalsIgnoreCase("admin")) return true;
-        for (Access acc: directory.accesses) {
+        for (Access acc : directory.getAccesses()) {
             if (acc.username.equalsIgnoreCase(username) && acc.delete) {
                 return true;
             }
@@ -162,5 +162,33 @@ public abstract class Account implements Serializable {
         } else {
             System.out.println("Invalid Arguments");
         }
+    }
+
+    public void displayDiskStatus(String[] args, Directory root) {
+        if (args.length == 1) {
+            System.out.println("1- Empty Space: " + root.getAllocator().getEmptySpace());
+            System.out.println("2- Allocated Space: " + root.getAllocator().getAllocatedSpace());
+            System.out.println("3- Empty Blocks in Disk (0 For Empty): " + root.getAllocator().getSpace());
+            System.out.println("4- Allocated Blocks in Disk for Each File:- ");
+            root.displayDiskStatus();
+        } else {
+            System.out.println("Invalid Arguments");
+        }
+    }
+
+    public void displayDiskStructure(String[] args, Directory root) {
+        if (args.length == 1) {
+            root.displayDiskStructure(0);
+        } else {
+            System.out.println("Invalid Arguments");
+        }
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public String getPassword() {
+        return password;
     }
 }

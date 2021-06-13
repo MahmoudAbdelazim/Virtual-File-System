@@ -1,9 +1,8 @@
-package com;
+package com.FileSystem;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 
-public class File implements Serializable {
+public class File {
     private String fileName;
     private int size;
     private String type;
@@ -24,14 +23,14 @@ public class File implements Serializable {
 
     public void displayAllocatedBlocks() {
         System.out.print(fileName + "\t");
-        if (type.equalsIgnoreCase("Contiguous")) // if contiguous, then we'll print the start and length
+        if (type.equalsIgnoreCase("Contiguous")) // if contiguous, then we'll store the start and length
             System.out.println(data.get(0) + " " + data.get(1));
-        else if (type.equalsIgnoreCase("Linked")) { // if linked, we'll print the start and end blocks
+        else if (type.equalsIgnoreCase("Linked")) { // if linked, we'll store the start and end blocks
             System.out.println(data.get(0) + " " + data.get(1));
             for (int j = 2; j < data.size() - 1; j++) {
                 System.out.println(data.get(j) + " " + data.get(j + 1));
             }
-        } else { // if indexed, we'll print the index block number and the index block itself
+        } else { // if indexed, we'll store the index block number and the index block itself
             System.out.println(data.get(0));
             System.out.print(data.get(0) + "\t");
             for (int i = 1; i < data.size(); i++) {

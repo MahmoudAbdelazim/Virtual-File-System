@@ -1,4 +1,7 @@
-package com;
+package com.Accounts;
+
+import com.FileSystem.Access;
+import com.FileSystem.Directory;
 
 import java.util.ArrayList;
 
@@ -11,7 +14,7 @@ public class Admin extends Account {
 
     public void createUser(String username, String password) {
         for (User user : users) {
-            if (user.username.equalsIgnoreCase(username)) {
+            if (user.getUsername().equalsIgnoreCase(username)) {
                 System.out.println("User already registered");
                 return;
             }
@@ -22,7 +25,7 @@ public class Admin extends Account {
 
     public void grantAccess(String username, Directory directory, String access) {
         for (User user : users) {
-            if (user.username.equalsIgnoreCase(username)) {
+            if (user.getUsername().equalsIgnoreCase(username)) {
                 Access access1;
                 if (access.equalsIgnoreCase("00")) {
                     access1 = new Access(false, false, username);
@@ -33,14 +36,14 @@ public class Admin extends Account {
                 } else {
                     access1 = new Access(false, true, username);
                 }
-                for (Access acc : directory.accesses) {
+                for (Access acc : directory.getAccesses()) {
                     if (acc.username.equalsIgnoreCase(username)) {
                         acc.create = access1.create;
                         acc.delete = access1.delete;
                         return;
                     }
                 }
-                directory.accesses.add(access1);
+                directory.getAccesses().add(access1);
                 return;
             }
         }

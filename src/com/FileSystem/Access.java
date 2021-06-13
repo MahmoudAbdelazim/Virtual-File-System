@@ -1,8 +1,6 @@
-package com;
+package com.FileSystem;
 
-import java.io.Serializable;
-
-public class Access implements Serializable {
+public class Access {
     public boolean create;
     public boolean delete;
     public String username;

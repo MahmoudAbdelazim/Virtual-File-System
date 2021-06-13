@@ -1,12 +1,15 @@
-package com;
+package com.Allocation;
 
-import java.io.Serializable;
-import java.util.ArrayList;
+import com.FileSystem.File;
 
-public interface Allocator extends Serializable {
+public interface Allocator {
     public boolean allocate(File file);
+
     public void deAllocate(File file);
+
     public int getEmptySpace();
+
     public int getAllocatedSpace();
+
     public String getSpace();
 }

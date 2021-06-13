@@ -1,20 +1,21 @@
-package com;
+package com.FileSystem;
 
-import java.io.Serializable;
+import com.Allocation.Allocator;
+
 import java.util.ArrayList;
 
-public class Directory implements Serializable {
-    private String name;
+public class Directory {
+    private String directoryName;
     private ArrayList<File> files;
     private ArrayList<Directory> subDirectories;
-    public Allocator allocator;
-    public ArrayList<Access> accesses;
+    private Allocator allocator;
+    private ArrayList<Access> accesses;
 
     public Directory(String name, Allocator allocator) {
         files = new ArrayList<>();
         subDirectories = new ArrayList<>();
         accesses = new ArrayList<>();
-        this.name = name;
+        this.directoryName = name;
         this.allocator = allocator;
     }
 
@@ -93,7 +94,7 @@ public class Directory implements Serializable {
         for (int i = 0; i < level; i++) {
             System.out.print("\t");
         }
-        System.out.println(name + "/");
+        System.out.println(directoryName + "/");
         for (File file : files) {
             for (int i = 0; i < level + 1; i++) {
                 System.out.print("\t");
@@ -112,23 +113,23 @@ public class Directory implements Serializable {
         return null;
     }
 
-    public String accessInfo() {
-        StringBuilder res = new StringBuilder();
-        for (Access acc: accesses) {
-            res.append(acc.username + ",");
-            if (acc.create) res.append("1");
-            else res.append("0");
-            if (acc.delete) res.append("1");
-            else res.append("0");
-        }
-        return res.toString();
+    public String getDirectoryName() {
+        return directoryName;
     }
 
-    public String getDirectoryName() {
-        return name;
+    public ArrayList<File> getFiles() {
+        return files;
     }
 
     public ArrayList<Directory> getSubDirectories() {
         return subDirectories;
+    }
+
+    public Allocator getAllocator() {
+        return allocator;
+    }
+
+    public ArrayList<Access> getAccesses() {
+        return accesses;
     }
 }

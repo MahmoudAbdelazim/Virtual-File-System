@@ -1,6 +1,7 @@
-package com;
+package com.Allocation;
 
-import java.io.Serializable;
+import com.FileSystem.File;
+
 import java.util.ArrayList;
 
 public class LinkedAllocator implements Allocator {
@@ -98,7 +99,7 @@ public class LinkedAllocator implements Allocator {
     }
 }
 
-class Node implements Serializable {
+class Node {
     public int cur = -1; // Used in Printing
     public boolean allocated = false;
     public Node next = null;
