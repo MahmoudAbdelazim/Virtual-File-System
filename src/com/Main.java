@@ -1,22 +1,17 @@
 package com;
 
-import com.Accounts.Account;
-import com.Accounts.Admin;
-import com.Accounts.User;
-import com.Allocation.Allocator;
-import com.Allocation.ContiguousAllocator;
-import com.Allocation.IndexedAllocator;
-import com.Allocation.LinkedAllocator;
-import com.FileSystem.Directory;
+import com.Accounts.*;
+import com.Allocation.*;
+import com.FileSystem.*;
 
-import java.io.*;
-import java.util.Scanner;
+import java.util.*;
 
 public class Main {
     private static Directory root;
-    private static Admin admin = new Admin("admin", "admin");
+    private static final ArrayList<User> users = new ArrayList<>();
+    private static final Admin admin = new Admin("admin", "admin", users);
     private static Account loggedInAccount = admin;
-    private static Scanner in = new Scanner(System.in);
+    private static final Scanner in = new Scanner(System.in);
 
     public static void main(String[] arg) {
         System.out.println("Enter the allocation type:");
@@ -26,18 +21,15 @@ public class Main {
         int allocationType = in.nextInt();
         System.out.println("Enter the disk size (in KB): ");
         int N = in.nextInt();
-        Allocator allocator;
         if (allocationType == 1) {
-            allocator = new ContiguousAllocator(N);
-            root = new Directory("root", allocator);
+            root = new Directory("root", new ContiguousAllocator(N));
         } else if (allocationType == 2) {
-            allocator = new LinkedAllocator(N);
-            root = new Directory("root", allocator);
+            root = new Directory("root", new LinkedAllocator(N));
         } else {
-            allocator = new IndexedAllocator(N);
-            root = new Directory("root", allocator);
+            root = new Directory("root", new IndexedAllocator(N));
         }
         in.skip("\n");
+        root.getAccesses().add(new Access(true, true, "admin"));
         while (true) {
             System.out.print("Enter command: ");
             String command = in.nextLine();
@@ -59,69 +51,13 @@ public class Main {
             else if (args[0].equalsIgnoreCase("DisplayDiskStructure"))
                 loggedInAccount.displayDiskStructure(args, root);
             else if (args[0].equalsIgnoreCase("TellUser"))
-                tellUser(args);
+                loggedInAccount.tellUser(args);
             else if (args[0].equalsIgnoreCase("Grant"))
                 grantAccess(args);
             else if (args[0].equalsIgnoreCase("CUser"))
                 createUser(args);
             else
                 System.out.println("Invalid Option!");
-        }
-    }
-
-    private static void createUser(String[] args) {
-        if (!loggedInAccount.getUsername().equalsIgnoreCase("admin")) {
-            System.out.println("Can't create user");
-            return;
-        }
-        if (args.length == 3) {
-            admin.createUser(args[1], args[2]);
-        } else {
-            System.out.println("Invalid Arguments");
-        }
-    }
-
-    private static void grantAccess(String[] args) {
-        if (!loggedInAccount.getUsername().equalsIgnoreCase("admin")) {
-            System.out.println("Can't grant access");
-            return;
-        }
-        if (args.length == 4) {
-            String[] path = args[2].split("/");
-            if (path[path.length - 1].contains(".")) {
-                System.out.println("Can't grant access to files");
-                return;
-            }
-            Directory cur = root;
-            if (!path[0].equalsIgnoreCase("root")) {
-                System.out.println("Path Not found");
-                return;
-            }
-            for (int i = 0; i < path.length - 1; i++) {
-                if (path[i].equalsIgnoreCase(cur.getDirectoryName())) {
-                    if (cur.searchForSubDirectory(path[i + 1]) != null) {
-                        cur = cur.searchForSubDirectory(path[i + 1]);
-                    } else {
-                        System.out.println("Path Not Found");
-                        return;
-                    }
-                } else {
-                    System.out.println("Path Not Found");
-                    return;
-                }
-            }
-            admin.grantAccess(args[1], cur, args[3]);
-        } else {
-            System.out.println("Invalid Arguments");
-        }
-    }
-
-    private static void tellUser(String[] args) {
-        if (args.length == 1) {
-            System.out.print("Current User: ");
-            System.out.println(loggedInAccount.getUsername());
-        } else {
-            System.out.println("Invalid Arguments");
         }
     }
 
@@ -146,5 +82,21 @@ public class Main {
         } else {
             System.out.println("Invalid arguments");
         }
+    }
+
+    private static void createUser(String[] args) {
+        if (!loggedInAccount.getUsername().equalsIgnoreCase("admin")) {
+            System.out.println("Can't create user");
+            return;
+        }
+        admin.createUser(args);
+    }
+
+    private static void grantAccess(String[] args) {
+        if (!loggedInAccount.getUsername().equalsIgnoreCase("admin")) {
+            System.out.println("Can't grant access");
+            return;
+        }
+        admin.grantAccess(args, root);
     }
 }

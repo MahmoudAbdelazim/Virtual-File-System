@@ -3,13 +3,13 @@ package com.Allocation;
 import com.FileSystem.File;
 
 public interface Allocator {
-    public boolean allocate(File file);
+    boolean allocate(File file);
 
-    public void deAllocate(File file);
+    void deAllocate(File file);
 
-    public int getEmptySpace();
+    int getEmptySpace();
 
-    public int getAllocatedSpace();
+    int getAllocatedSpace();
 
-    public String getSpace();
+    String getSpace();
 }

@@ -3,8 +3,8 @@ package com.FileSystem;
 import java.util.ArrayList;
 
 public class File {
-    private String fileName;
-    private int size;
+    private final String fileName;
+    private final int size;
     private String type;
     private ArrayList<Integer> data;
 

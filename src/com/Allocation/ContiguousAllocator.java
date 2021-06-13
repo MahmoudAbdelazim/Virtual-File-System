@@ -5,8 +5,8 @@ import com.FileSystem.File;
 import java.util.ArrayList;
 
 public class ContiguousAllocator implements Allocator {
-    private ArrayList<Boolean> space;
-    int N;
+    private final ArrayList<Boolean> space;
+    private final int N;
 
     public ContiguousAllocator(int N) {
         this.N = N;

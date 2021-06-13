@@ -1,11 +1,10 @@
 package com.Accounts;
 
-import com.FileSystem.Access;
 import com.FileSystem.Directory;
 
 public abstract class Account {
-    private String username;
-    private String password;
+    private final String username;
+    private final String password;
 
     Account(String username, String password) {
         this.username = username;
@@ -13,23 +12,11 @@ public abstract class Account {
     }
 
     private boolean canCreate(Directory directory) {
-        if (username.equalsIgnoreCase("admin")) return true;
-        for (Access acc : directory.getAccesses()) {
-            if (acc.username.equalsIgnoreCase(username) && acc.create) {
-                return true;
-            }
-        }
-        return false;
+        return directory.hasCreateAccess(username);
     }
 
     private boolean canDelete(Directory directory) {
-        if (username.equalsIgnoreCase("admin")) return true;
-        for (Access acc : directory.getAccesses()) {
-            if (acc.username.equalsIgnoreCase(username) && acc.delete) {
-                return true;
-            }
-        }
-        return false;
+        return directory.hasDeleteAccess(username);
     }
 
     public void createFolder(String[] args, Directory root) {
@@ -56,8 +43,7 @@ public abstract class Account {
                     return;
                 }
             }
-            if (can)
-                cur.createFolder(path[path.length - 1]); // create the new folder
+            if (can) cur.createFolder(path[path.length - 1]); // create the new folder
             else System.out.println("User doesn't have permission to create");
         } else {
             System.out.println("Invalid Arguments");
@@ -179,6 +165,15 @@ public abstract class Account {
     public void displayDiskStructure(String[] args, Directory root) {
         if (args.length == 1) {
             root.displayDiskStructure(0);
+        } else {
+            System.out.println("Invalid Arguments");
+        }
+    }
+
+    public void tellUser(String[] args) {
+        if (args.length == 1) {
+            System.out.print("Current User: ");
+            System.out.println(username);
         } else {
             System.out.println("Invalid Arguments");
         }

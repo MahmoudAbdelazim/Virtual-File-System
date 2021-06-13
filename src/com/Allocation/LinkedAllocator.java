@@ -5,8 +5,8 @@ import com.FileSystem.File;
 import java.util.ArrayList;
 
 public class LinkedAllocator implements Allocator {
-    private ArrayList<Node> space;
-    private int N;
+    private final ArrayList<Node> space;
+    private final int N;
 
     public LinkedAllocator(int N) {
         this.N = N;

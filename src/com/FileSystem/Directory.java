@@ -5,11 +5,11 @@ import com.Allocation.Allocator;
 import java.util.ArrayList;
 
 public class Directory {
-    private String directoryName;
-    private ArrayList<File> files;
-    private ArrayList<Directory> subDirectories;
-    private Allocator allocator;
-    private ArrayList<Access> accesses;
+    private final String directoryName;
+    private final ArrayList<File> files;
+    private final ArrayList<Directory> subDirectories;
+    private final Allocator allocator;
+    private final ArrayList<Access> accesses;
 
     public Directory(String name, Allocator allocator) {
         files = new ArrayList<>();
@@ -113,16 +113,33 @@ public class Directory {
         return null;
     }
 
+    public void grantAccess(boolean create, boolean delete, String username) {
+        for (Access access: accesses) {
+            if (access.username.equalsIgnoreCase(username)) {
+                access.create = create;
+                access.delete = delete;
+                return;
+            }
+        }
+        accesses.add(new Access(create, delete, username));
+    }
+
+    public boolean hasCreateAccess(String username) {
+        for (Access access: accesses) {
+            if (access.username.equalsIgnoreCase(username) && access.create) return true;
+        }
+        return false;
+    }
+
+    public boolean hasDeleteAccess(String username) {
+        for (Access access: accesses) {
+            if (access.username.equalsIgnoreCase(username) && access.delete) return true;
+        }
+        return false;
+    }
+
     public String getDirectoryName() {
         return directoryName;
-    }
-
-    public ArrayList<File> getFiles() {
-        return files;
-    }
-
-    public ArrayList<Directory> getSubDirectories() {
-        return subDirectories;
     }
 
     public Allocator getAllocator() {
