@@ -29,7 +29,7 @@ public class Main {
             root = new Directory("root", new IndexedAllocator(N));
         }
         in.skip("\n");
-        root.getAccesses().add(new Access(true, true, "admin"));
+        root.grantAccess(true, true, "admin");
         while (true) {
             System.out.print("Enter command: ");
             String command = in.nextLine();

@@ -21,30 +21,17 @@ public abstract class Account {
 
     public void createFolder(String[] args, Directory root) {
         if (args.length == 2) {
-            boolean can = false;
             String[] path = args[1].split("/");
-            Directory cur = root;
-            if (!path[0].equalsIgnoreCase("root")) {
-                System.out.println("Path Not found");
+            Directory directory = getDirectoryFromPath(path, root);
+            if (directory == null) {
+                System.out.println("Path Not Found");
                 return;
             }
-            if (canCreate(root)) can = true;
-            for (int i = 0; i < path.length - 2; i++) {
-                if (path[i].equalsIgnoreCase(cur.getDirectoryName())) {
-                    if (cur.searchForSubDirectory(path[i + 1]) != null) {
-                        cur = cur.searchForSubDirectory(path[i + 1]);
-                        if (canCreate(cur)) can = true;
-                    } else {
-                        System.out.println("Path Not Found");
-                        return;
-                    }
-                } else {
-                    System.out.println("Path Not Found");
-                    return;
-                }
+            if (canCreate(directory)) {
+                directory.createFolder(path[path.length - 1]);
             }
-            if (can) cur.createFolder(path[path.length - 1]); // create the new folder
-            else System.out.println("User doesn't have permission to create");
+            else
+                System.out.println("User doesn't have permission to create");
         } else {
             System.out.println("Invalid Arguments");
         }
@@ -52,27 +39,11 @@ public abstract class Account {
 
     public void createFile(String[] args, Directory root) {
         if (args.length == 3) {
-            boolean can = false;
             String[] path = args[1].split("/"); // split the path by '/' characters
-            Directory cur = root; // start from the root
-            if (!path[0].equalsIgnoreCase("root")) { // first word in the path must be root
-                System.out.println("Path Not found2");
+            Directory directory = getDirectoryFromPath(path, root);
+            if (directory == null) {
+                System.out.println("Path Not Found");
                 return;
-            }
-            if (canCreate(root)) can = true;
-            for (int i = 0; i < path.length - 2; i++) { // keep going forward in path and check if it's valid
-                if (path[i].equalsIgnoreCase(cur.getDirectoryName())) {
-                    if (cur.searchForSubDirectory(path[i + 1]) != null) {
-                        cur = cur.searchForSubDirectory(path[i + 1]);
-                        if (canCreate(cur)) can = true;
-                    } else {
-                        System.out.println("Path Not Found");
-                        return;
-                    }
-                } else {
-                    System.out.println("Path Not Found");
-                    return;
-                }
             }
             String size = args[args.length - 1]; // the size of the new file
             for (int i = 0; i < size.length(); i++) {
@@ -81,8 +52,10 @@ public abstract class Account {
                     return;
                 }
             }
-            if (can) cur.createFile(path[path.length - 1], Integer.parseInt(size)); // create the new file
-            else System.out.println("User doesn't have permission to create");
+            if (canCreate(directory))
+                directory.createFile(path[path.length - 1], Integer.parseInt(size)); // create the new file
+            else
+                System.out.println("User doesn't have permission to create");
         } else {
             System.out.println("Invalid Arguments");
         }
@@ -90,30 +63,16 @@ public abstract class Account {
 
     public void deleteFile(String[] args, Directory root) {
         if (args.length == 2) {
-            boolean can = false;
             String[] path = args[1].split("/");
-            Directory cur = root;
-            if (!path[0].equalsIgnoreCase("root")) {
-                System.out.println("Path Not found");
+            Directory directory = getDirectoryFromPath(path, root);
+            if (directory == null) {
+                System.out.println("Path Not Found");
                 return;
             }
-            if (canDelete(root)) can = true;
-            for (int i = 0; i < path.length - 2; i++) {
-                if (path[i].equalsIgnoreCase(cur.getDirectoryName())) {
-                    if (cur.searchForSubDirectory(path[i + 1]) != null) {
-                        cur = cur.searchForSubDirectory(path[i + 1]);
-                        if (canDelete(cur)) can = true;
-                    } else {
-                        System.out.println("Path Not Found");
-                        return;
-                    }
-                } else {
-                    System.out.println("Path Not Found");
-                    return;
-                }
-            }
-            if (can) cur.deleteFile(path[path.length - 1]); // delete the specified file
-            else System.out.println("User doesn't have permission to delete");
+            if (canDelete(directory))
+                directory.deleteFile(path[path.length - 1]); // delete the specified file
+            else
+                System.out.println("User doesn't have permission to delete");
         } else {
             System.out.println("Invalid Arguments");
         }
@@ -121,33 +80,38 @@ public abstract class Account {
 
     public void deleteFolder(String[] args, Directory root) {
         if (args.length == 2) {
-            boolean can = false;
             String[] path = args[1].split("/");
-            Directory cur = root;
-            if (!path[0].equalsIgnoreCase("root")) {
-                System.out.println("Path Not found");
+            Directory directory = getDirectoryFromPath(path, root);
+            if (directory == null) {
+                System.out.println("Path Not Found");
                 return;
             }
-            if (canDelete(root)) can = true;
-            for (int i = 0; i < path.length - 2; i++) {
-                if (path[i].equalsIgnoreCase(cur.getDirectoryName())) {
-                    if (cur.searchForSubDirectory(path[i + 1]) != null) {
-                        cur = cur.searchForSubDirectory(path[i + 1]);
-                        if (canDelete(cur)) can = true;
-                    } else {
-                        System.out.println("Path Not Found");
-                        return;
-                    }
-                } else {
-                    System.out.println("Path Not Found");
-                    return;
-                }
-            }
-            if (can) cur.deleteFolder(path[path.length - 1]); // delete the specified folder
-            else System.out.println("User doesn't have permission to delete");
+            if (canDelete(directory))
+                directory.deleteFolder(path[path.length - 1]); // delete the specified folder
+            else
+                System.out.println("User doesn't have permission to delete");
         } else {
             System.out.println("Invalid Arguments");
         }
+    }
+
+    private Directory getDirectoryFromPath(String[] path, Directory root) {
+        Directory cur = root;
+        if (!path[0].equalsIgnoreCase("root")) {
+            return null;
+        }
+        for (int i = 0; i < path.length - 2; i++) {
+            if (path[i].equalsIgnoreCase(cur.getDirectoryName())) {
+                if (cur.searchForSubDirectory(path[i + 1]) != null) {
+                    cur = cur.searchForSubDirectory(path[i + 1]);
+                } else {
+                    return null;
+                }
+            } else {
+                return null;
+            }
+        }
+        return cur;
     }
 
     public void displayDiskStatus(String[] args, Directory root) {

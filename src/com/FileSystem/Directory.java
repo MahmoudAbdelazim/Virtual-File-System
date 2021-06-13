@@ -43,6 +43,7 @@ public class Directory {
                 return;
             }
         }
+        subDirectory.accesses.addAll(accesses);
         subDirectories.add(subDirectory);
         System.out.println("Folder created successfully");
     }
@@ -118,10 +119,14 @@ public class Directory {
             if (access.username.equalsIgnoreCase(username)) {
                 access.create = create;
                 access.delete = delete;
+                for (Directory directory: subDirectories)
+                    directory.grantAccess(create, delete, username);
                 return;
             }
         }
         accesses.add(new Access(create, delete, username));
+        for (Directory directory: subDirectories)
+            directory.grantAccess(create, delete, username);
     }
 
     public boolean hasCreateAccess(String username) {
@@ -144,9 +149,5 @@ public class Directory {
 
     public Allocator getAllocator() {
         return allocator;
-    }
-
-    public ArrayList<Access> getAccesses() {
-        return accesses;
     }
 }
